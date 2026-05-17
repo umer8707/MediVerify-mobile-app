@@ -27,7 +27,19 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow MediVerify to access your camera to scan QR codes."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow MediVerify to access your location when scanning medicines."
+        }
+      ]
     ]
   }
 }

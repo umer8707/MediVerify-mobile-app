@@ -59,9 +59,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    const t = setTimeout(() => setIsLoading(false), 2000);
+    return () => clearTimeout(t);
   }, []);
 
   if (isLoading) {
@@ -104,4 +103,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-

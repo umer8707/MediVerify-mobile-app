@@ -1,23 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import { mockMedicines } from '../data/mockData';
+import { Medicine } from '../types';
 import ScanHistoryCard from '../components/ScanHistoryCard';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
+const SCAN_HISTORY_KEY = 'scan_history';
+
 export default function HistoryScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const [history, setHistory] = useState<Medicine[]>([]);
 
-  const handleViewDetails = (medicine: typeof mockMedicines[0]) => {
+  useFocusEffect(
+    useCallback(() => {
+      AsyncStorage.getItem(SCAN_HISTORY_KEY).then((raw) => {
+        setHistory(raw ? JSON.parse(raw) : []);
+      });
+    }, [])
+  );
+
+  const handleViewDetails = (medicine: Medicine) => {
     navigation.navigate('ScanResult', { medicine });
   };
 
@@ -30,8 +43,8 @@ export default function HistoryScreen() {
         </Text>
       </View>
 
-      {mockMedicines.length > 0 ? (
-        mockMedicines.map((medicine) => (
+      {history.length > 0 ? (
+        history.map((medicine) => (
           <ScanHistoryCard
             key={medicine.id}
             medicine={medicine}
@@ -92,4 +105,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-

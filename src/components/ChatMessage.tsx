@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import Markdown from 'react-native-markdown-display';
 import { ChatMessage as ChatMessageType } from '../types';
 
 interface ChatMessageProps {
@@ -14,17 +15,24 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         message.isUser ? styles.userContainer : styles.botContainer,
       ]}
     >
-      <Text
-        style={[
-          styles.text,
-          message.isUser ? styles.userText : styles.botText,
-        ]}
-      >
-        {message.text}
-      </Text>
+      {message.isUser ? (
+        <Text style={styles.userText}>{message.text}</Text>
+      ) : (
+        <Markdown style={markdownStyles}>{message.text}</Markdown>
+      )}
     </View>
   );
 }
+
+const markdownStyles = {
+  body: { fontSize: 15, lineHeight: 20, color: '#000' },
+  paragraph: { marginTop: 0, marginBottom: 4 },
+  bullet_list: { marginTop: 0, marginBottom: 4 },
+  ordered_list: { marginTop: 0, marginBottom: 4 },
+  list_item: { marginBottom: 2 },
+  strong: { fontWeight: '700' as const },
+  code_inline: { backgroundColor: '#F2F2F7', borderRadius: 4, paddingHorizontal: 4 },
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -41,15 +49,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     backgroundColor: '#FFFFFF',
   },
-  text: {
+  userText: {
     fontSize: 15,
     lineHeight: 20,
-  },
-  userText: {
     color: '#FFFFFF',
   },
-  botText: {
-    color: '#000',
-  },
 });
-
