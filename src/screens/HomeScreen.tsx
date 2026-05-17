@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -68,8 +68,13 @@ export default function HomeScreen() {
 
   useEffect(() => {
     loadScanHistory().then((h) => setRecentScans(h.slice(0, 3)));
-    AsyncStorage.getItem('user_role').then(setUserRole);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      AsyncStorage.getItem('user_role').then(setUserRole);
+    }, [])
+  );
 
   // Reset scanned flag when camera closes
   useEffect(() => {
